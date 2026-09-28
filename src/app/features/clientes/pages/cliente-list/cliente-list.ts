@@ -57,17 +57,37 @@ export class ClienteList implements OnInit {
   }
 
   cargar(pagina: number, tamanio: number, ordenarPor: string, direccion: 'asc' | 'desc'): void {
-    // Como effect() ya tiene tracking de los signals, es buena idea usar setTimeout o
-    // usar untracked() si modificamos signals acá, pero al llamar set() no hay problema.
     this.cargando.set(true);
     this.error.set(null);
     
     this.clienteService.listar(pagina, tamanio, ordenarPor, direccion).subscribe({
-      next: (datos: PaginaResponse<Cliente>) => {
-        this.clientes.set(datos.contenido);
-        this.totalElementos.set(datos.totalElementos);
-        this.totalPaginas.set(datos.totalPaginas);
-        this.ultima.set(datos.ultima);
+      next: (datos: any) => {
+        if (Array.isArray(datos)) {
+          // El backend envió un arreglo: Ordenamos y Paginamos LOCALMENTE
+          let arr = [...datos];
+          
+          arr.sort((a: any, b: any) => {
+            const vA = (a[ordenarPor] || '').toString().toLowerCase();
+            const vB = (b[ordenarPor] || '').toString().toLowerCase();
+            if (vA < vB) return direccion === 'asc' ? -1 : 1;
+            if (vA > vB) return direccion === 'asc' ? 1 : -1;
+            return 0;
+          });
+
+          const inicio = pagina * tamanio;
+          const fin = inicio + tamanio;
+
+          this.clientes.set(arr.slice(inicio, fin));
+          this.totalElementos.set(arr.length);
+          this.totalPaginas.set(Math.ceil(arr.length / tamanio) || 1);
+          this.ultima.set(fin >= arr.length);
+        } else {
+          // El backend envió el objeto paginado esperado
+          this.clientes.set(datos.contenido || []);
+          this.totalElementos.set(datos.totalElementos || 0);
+          this.totalPaginas.set(datos.totalPaginas || 1);
+          this.ultima.set(datos.ultima ?? true);
+        }
         this.cargando.set(false);
       },
       error: (err: HttpErrorResponse) => {

@@ -1,22 +1,25 @@
-import { inject, Service } from '@angular/core';
+import { inject, Injectable } from '@angular/core'; // 👈 Cambiado Service por Injectable
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Cliente, ClienteRequest } from '../models/cliente.model';
-import { PaginaResponse } from '../../../../core/models/pagina-response';
+// 👇 Si sigue fallando la ruta, prueba quitarle un "../" a esta línea
+import { PaginaResponse } from '../../../core/models/pagina-response';
 
-@Service()
+@Injectable({
+  providedIn: 'root' // 👈 Esto permite que Angular reconozca el servicio en toda la app
+})
 export class ClienteService {
   private readonly http = inject(HttpClient);
   private readonly url = `${environment.apiUrl}/clientes`;
 
-  listar(pagina = 0, tamanio = 10, ordenarPor = 'apellidos', 
+  listar(pagina = 0, tamanio = 10, ordenarPor = 'apellidos',
          direccion: 'asc' | 'desc' = 'asc'): Observable<PaginaResponse<Cliente>> {
     const params = new HttpParams()
-      .set('pagina', pagina)
-      .set('tamanio', tamanio)
-      .set('ordenarPor', ordenarPor)
-      .set('direccion', direccion);
+        .set('pagina', pagina)
+        .set('tamanio', tamanio)
+        .set('ordenarPor', ordenarPor)
+        .set('direccion', direccion);
     return this.http.get<PaginaResponse<Cliente>>(this.url, { params });
   }
 

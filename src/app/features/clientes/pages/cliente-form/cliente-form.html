@@ -6,59 +6,77 @@
   }
 
   <form [formGroup]="form" (ngSubmit)="guardar()" class="card formulario">
-    <label>
-      DNI
-      <input class="input" formControlName="dni" maxlength="8" />
-    </label>
-    @if (form.controls.dni.touched && form.controls.dni.invalid) {
-      <small class="error">El DNI es obligatorio y debe tener 8 dígitos.</small>
-    }
-    @if (erroresServidor()['dni']; as mensaje) {
-      <small class="error">{{ mensaje }}</small>
-    }
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <label>
+        DNI *
+        <input class="input" formControlName="dni" />
+        @if (form.controls.dni.touched && form.controls.dni.invalid) {
+          <small class="error">El DNI es obligatorio y debe tener exactamente 8 dígitos.</small>
+        }
+        @if (erroresServidor()['dni']; as mensaje) {
+          <small class="error">{{ mensaje }}</small>
+        }
+      </label>
 
-    <label>
-      Nombres
-      <input class="input" formControlName="nombres" />
-    </label>
-    @if (form.controls.nombres.touched && form.controls.nombres.invalid) {
-      <small class="error">Los nombres son obligatorios (2 a 100 caracteres).</small>
-    }
+      <label>
+        Correo electrónico *
+        <input class="input" type="email" formControlName="email" />
+        @if (form.controls.email.touched && form.controls.email.invalid) {
+          <small class="error">El correo es obligatorio y debe tener un formato válido.</small>
+        }
+        @if (erroresServidor()['email']; as mensaje) {
+          <small class="error">{{ mensaje }}</small>
+        }
+      </label>
+    </div>
 
-    <label>
-      Apellidos
-      <input class="input" formControlName="apellidos" />
-    </label>
-    @if (form.controls.apellidos.touched && form.controls.apellidos.invalid) {
-      <small class="error">Los apellidos son obligatorios (2 a 100 caracteres).</small>
-    }
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <label>
+        Nombres *
+        <input class="input" formControlName="nombres" />
+        @if (form.controls.nombres.touched && form.controls.nombres.invalid) {
+          <small class="error">Obligatorio (entre 2 y 100 caracteres).</small>
+        }
+        @if (erroresServidor()['nombres']; as mensaje) {
+          <small class="error">{{ mensaje }}</small>
+        }
+      </label>
 
-    <label>
-      Email
-      <input class="input" type="email" formControlName="email" />
-    </label>
-    @if (form.controls.email.touched && form.controls.email.invalid) {
-      <small class="error">Ingrese un correo válido.</small>
-    }
-    @if (erroresServidor()['email']; as mensaje) {
-      <small class="error">{{ mensaje }}</small>
-    }
+      <label>
+        Apellidos *
+        <input class="input" formControlName="apellidos" />
+        @if (form.controls.apellidos.touched && form.controls.apellidos.invalid) {
+          <small class="error">Obligatorio (entre 2 y 100 caracteres).</small>
+        }
+        @if (erroresServidor()['apellidos']; as mensaje) {
+          <small class="error">{{ mensaje }}</small>
+        }
+      </label>
+    </div>
 
-    <label>
-      Teléfono
-      <input class="input" formControlName="telefono" maxlength="9" />
-    </label>
-    @if (form.controls.telefono.touched && form.controls.telefono.invalid) {
-      <small class="error">El teléfono debe tener 9 dígitos.</small>
-    }
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <label>
+        Teléfono
+        <input class="input" formControlName="telefono" />
+        @if (form.controls.telefono.touched && form.controls.telefono.invalid) {
+          <small class="error">Debe tener exactamente 9 dígitos si se ingresa.</small>
+        }
+        @if (erroresServidor()['telefono']; as mensaje) {
+          <small class="error">{{ mensaje }}</small>
+        }
+      </label>
 
-    <label>
-      Dirección
-      <textarea class="input" rows="2" formControlName="direccion"></textarea>
-    </label>
-    @if (form.controls.direccion.invalid) {
-      <small class="error">Máximo 250 caracteres.</small>
-    }
+      <label>
+        Dirección
+        <input class="input" formControlName="direccion" />
+        @if (form.controls.direccion.touched && form.controls.direccion.invalid) {
+          <small class="error">Máximo 250 caracteres.</small>
+        }
+        @if (erroresServidor()['direccion']; as mensaje) {
+          <small class="error">{{ mensaje }}</small>
+        }
+      </label>
+    </div>
 
     <label class="check">
       <input type="checkbox" formControlName="estado" /> Activo

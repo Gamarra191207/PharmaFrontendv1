@@ -17,9 +17,8 @@ export class ClienteForm implements OnInit {
   private readonly clienteService = inject(ClienteService);
   private readonly router = inject(Router);
 
-  /** Llega desde la ruta ':id/editar' gracias a withComponentInputBinding(). */
   readonly id = input<string>();
-
+  
   protected readonly guardando = signal(false);
   protected readonly error = signal<string | null>(null);
   protected readonly erroresServidor = signal<Record<string, string>>({});
@@ -71,12 +70,16 @@ export class ClienteForm implements OnInit {
       direccion: valores.direccion.trim() || null,
       estado: valores.estado,
     };
+    
     const id = this.id();
     const peticion = id
       ? this.clienteService.actualizar(Number(id), dto)
       : this.clienteService.crear(dto);
-
+      
     this.guardando.set(true);
+    this.error.set(null);
+    this.erroresServidor.set({});
+    
     peticion.subscribe({
       next: () => this.router.navigate(['/clientes']),
       error: (err: HttpErrorResponse) => {

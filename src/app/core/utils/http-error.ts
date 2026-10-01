@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorResponse } from '../models/error-response';
+import { WritableSignal } from '@angular/core';
 
 export function mensajeError(err: HttpErrorResponse): string {
   if (err.status === 0) {
@@ -12,4 +13,9 @@ export function mensajeError(err: HttpErrorResponse): string {
 export function erroresDeValidacion(err: HttpErrorResponse): Record<string, string> {
   const cuerpo = err.error as ErrorResponse | null;
   return cuerpo?.validationErrors ?? {};
+}
+
+export function mostrarError(signalError: WritableSignal<string | null>, err: HttpErrorResponse, ms = 3000): void {
+  signalError.set(mensajeError(err));
+  setTimeout(() => signalError.set(null), ms);
 }

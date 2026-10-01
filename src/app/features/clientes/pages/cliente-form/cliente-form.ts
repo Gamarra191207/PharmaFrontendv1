@@ -4,7 +4,7 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterLink } from '@angular/router';
 import { ClienteRequest } from '../../models/cliente.model';
 import { ClienteService } from '../../services/cliente-service';
-import { erroresDeValidacion, mensajeError } from '../../../../core/utils/http-error';
+import { erroresDeValidacion, mensajeError, mostrarError } from '../../../../core/utils/http-error';
 
 @Component({
   selector: 'app-cliente-form',
@@ -50,7 +50,7 @@ export class ClienteForm implements OnInit {
           direccion: c.direccion ?? '',
           estado: c.estado,
         }),
-        error: (err: HttpErrorResponse) => this.error.set(mensajeError(err)),
+        error: (err: HttpErrorResponse) => mostrarError(this.error, err),
       });
     }
   }
@@ -84,7 +84,7 @@ export class ClienteForm implements OnInit {
       next: () => this.router.navigate(['/clientes']),
       error: (err: HttpErrorResponse) => {
         this.guardando.set(false);
-        this.error.set(mensajeError(err));
+        mostrarError(this.error, err);
         this.erroresServidor.set(erroresDeValidacion(err));
       },
     });

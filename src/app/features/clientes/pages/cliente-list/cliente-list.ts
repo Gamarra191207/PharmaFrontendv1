@@ -3,7 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { Cliente } from '../../models/cliente.model';
 import { ClienteService } from '../../services/cliente-service';
-import { mensajeError } from '../../../../core/utils/http-error';
+import { mensajeError, mostrarError } from '../../../../core/utils/http-error';
 import { PaginaResponse } from '../../../../core/models/pagina-response';
 
 @Component({
@@ -91,7 +91,7 @@ export class ClienteList implements OnInit {
         this.cargando.set(false);
       },
       error: (err: HttpErrorResponse) => {
-        this.error.set(mensajeError(err));
+        mostrarError(this.error, err);
         this.cargando.set(false);
       },
     });
@@ -106,7 +106,7 @@ export class ClienteList implements OnInit {
         // Al ser baja lógica recargamos la página completa en lugar de quitarlo del arreglo
         this.cargar(this.pagina(), this.tamanio(), this.ordenarPor(), this.direccion());
       },
-      error: (err: HttpErrorResponse) => this.error.set(mensajeError(err)),
+      error: (err: HttpErrorResponse) => mostrarError(this.error, err),
     });
   }
 

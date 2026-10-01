@@ -7,7 +7,7 @@ import { Cliente, ClienteRequest } from '../models/cliente.model';
 import { PaginaResponse } from '../../../core/models/pagina-response';
 
 @Injectable({
-  providedIn: 'root' // 👈 Esto permite que Angular reconozca el servicio en toda la app
+  providedIn: 'root'
 })
 export class ClienteService {
   private readonly http = inject(HttpClient);

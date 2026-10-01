@@ -4,7 +4,7 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterLink } from '@angular/router';
 import { CategoriaRequest } from '../../models/categoria.model';
 import { CategoriaService } from '../../services/categoria-service';
-import { erroresDeValidacion, mensajeError } from '../../../../core/utils/http-error';
+import { erroresDeValidacion, mensajeError, mostrarError } from '../../../../core/utils/http-error';
 
 @Component({
   selector: 'app-categoria-form',
@@ -43,7 +43,7 @@ export class CategoriaForm implements OnInit {
           descripcion: c.descripcion ?? '',
           estado: c.estado,
         }),
-        error: (err: HttpErrorResponse) => this.error.set(mensajeError(err)),
+        error: (err: HttpErrorResponse) => mostrarError(this.error, err),
       });
     }
   }
@@ -69,7 +69,7 @@ export class CategoriaForm implements OnInit {
       next: () => this.router.navigate(['/categorias']),
       error: (err: HttpErrorResponse) => {
         this.guardando.set(false);
-        this.error.set(mensajeError(err));
+        mostrarError(this.error, err);
         this.erroresServidor.set(erroresDeValidacion(err));
       },
     });

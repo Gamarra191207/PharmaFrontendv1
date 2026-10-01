@@ -3,7 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { Categoria } from '../../models/categoria.model';
 import { CategoriaService } from '../../services/categoria-service';
-import { mensajeError } from '../../../../core/utils/http-error';
+import { mensajeError, mostrarError } from '../../../../core/utils/http-error';
 
 @Component({
   selector: 'app-categoria-list',
@@ -37,7 +37,7 @@ export class CategoriaList implements OnInit {
         this.cargando.set(false);
       },
       error: (err: HttpErrorResponse) => {
-        this.error.set(mensajeError(err));
+        mostrarError(this.error, err);
         this.cargando.set(false);
       },
     });
@@ -49,7 +49,7 @@ export class CategoriaList implements OnInit {
     }
     this.categoriaService.eliminar(categoria.id).subscribe({
       next: () => this.categorias.update(lista => lista.filter(c => c.id !== categoria.id)),
-      error: (err: HttpErrorResponse) => this.error.set(mensajeError(err)),
+      error: (err: HttpErrorResponse) => mostrarError(this.error, err),
     });
   }
 }

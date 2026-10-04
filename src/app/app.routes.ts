@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+﻿import { Routes } from '@angular/router';
 import { MainLayout } from './layout/main-layout/main-layout';
 
 export const routes: Routes = [
@@ -18,6 +18,11 @@ export const routes: Routes = [
           import('./features/categorias/categorias.routes').then(m => m.CATEGORIAS_ROUTES),
       },
       {
+        path: 'productos',
+        loadChildren: () =>
+          import('./features/productos/productos.routes').then(m => m.PRODUCTOS_ROUTES),
+      },
+      {
         path: 'clientes',
         loadChildren: () =>
           import('./features/clientes/clientes.routes').then(m => m.CLIENTES_ROUTES),
@@ -26,8 +31,9 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    title: 'Página no encontrada',
+    title: 'PÃ¡gina no encontrada',
     loadComponent: () =>
       import('./shared/pages/no-encontrado/no-encontrado').then(m => m.NoEncontrado),
   },
 ];
+

@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
+﻿import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -38,7 +38,7 @@ export class ProductoForm implements OnInit {
     precio: this.fb.control<number | null>(null, [Validators.required, Validators.min(0.01)]),
     stock: this.fb.control<number | null>(0, [Validators.required, Validators.min(0), Validators.pattern(/^\d+$/)]),
     estado: [true],
-    categoriaId: this.fb.control<number | null>(null, Validators.required),
+    id_categoria: this.fb.control<number | null>(null, Validators.required),
   });
 
   /** Opciones del select: categorias activas + la que ya tenia el producto. */
@@ -51,7 +51,7 @@ export class ProductoForm implements OnInit {
   );
 
   /** Valor del select convertido en signal para validar la dependencia. */
-  private readonly categoriaElegida = toSignal(this.form.controls.categoriaId.valueChanges, { initialValue: null });
+  private readonly categoriaElegida = toSignal(this.form.controls.id_categoria.valueChanges, { initialValue: null });
 
   protected readonly categoriaInactiva = computed(() => {
     const elegida = this.categorias().find(c => c.id === this.categoriaElegida());
@@ -71,13 +71,13 @@ export class ProductoForm implements OnInit {
       }).subscribe({
         next: ({ categorias, producto }) => {
           this.categorias.set(categorias);
-          this.categoriaOriginal.set(producto.categoriaId);
+          this.categoriaOriginal.set(producto.id_categoria);
           this.form.setValue({
             nombre: producto.nombre,
             precio: producto.precio,
             stock: producto.stock,
             estado: producto.estado,
-            categoriaId: producto.categoriaId,
+            id_categoria: producto.id_categoria,
           });
           this.cargando.set(false);
         },
@@ -106,7 +106,7 @@ export class ProductoForm implements OnInit {
       precio: Number(v.precio),
       stock: Number(v.stock),
       estado: v.estado,
-      categoriaId: Number(v.categoriaId),
+      id_categoria: Number(v.id_categoria),
     };
 
     const id = this.id();
@@ -130,3 +130,4 @@ export class ProductoForm implements OnInit {
     this.cargando.set(false);
   }
 }
+

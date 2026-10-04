@@ -53,7 +53,12 @@ export class ProductoList implements OnInit {
   protected readonly productos = computed(() => {
     const filtro = this.categoriaFiltro();
     const lista = this.productosData();
-    return filtro === null ? lista : lista.filter(p => p.categoriaId === filtro);
+    const categorias = this.categorias();
+    const mapeados = lista.map(p => {
+      const cat = categorias.find(c => c.id === p.id_categoria);
+      return { ...p, categoriaNombre: cat ? cat.nombre : 'Desconocida' };
+    });
+    return filtro === null ? mapeados : mapeados.filter(p => p.id_categoria === filtro);
   });
 
   ngOnInit(): void {
@@ -142,3 +147,4 @@ export class ProductoList implements OnInit {
     });
   }
 }
+

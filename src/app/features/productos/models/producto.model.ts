@@ -1,13 +1,12 @@
-export interface Producto {
+﻿export interface Producto {
   id: number;
   nombre: string;
   precio: number;
   stock: number;
   estado: boolean;
-  categoriaId: number;
-  categoriaNombre: string;
-  fechaCreacion: string;
-  fechaModificacion: string | null;
+  id_categoria: number; // backend uses id_categoria
+  fecha_creacion: string;
+  fecha_modificacion: string | null;
 }
 
 export interface ProductoRequest {
@@ -15,7 +14,7 @@ export interface ProductoRequest {
   precio: number;
   stock: number;
   estado: boolean;
-  categoriaId: number;
+  id_categoria: number; // backend uses id_categoria
 }
 
 /** Campos que el backend acepta en ordenarPor. */

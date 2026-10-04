@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal, effect } from '@angular/core';
+﻿import { Component, computed, inject, OnInit, signal, effect } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { Cliente } from '../../models/cliente.model';
@@ -22,13 +22,13 @@ export class ClienteList implements OnInit {
   protected readonly error = signal<string | null>(null);
   protected readonly filtro = signal('');
   
-  // Paginación y Orden
+  // PaginaciÃ³n y Orden
   protected readonly pagina = signal(0);
   protected readonly tamanio = signal(10);
   protected readonly ordenarPor = signal('apellidos');
   protected readonly direccion = signal<'asc' | 'desc'>('asc');
   
-  // Metadatos de la página
+  // Metadatos de la pÃ¡gina
   protected readonly totalElementos = signal(0);
   protected readonly totalPaginas = signal(0);
   protected readonly ultima = signal(true);
@@ -44,7 +44,7 @@ export class ClienteList implements OnInit {
     });
   }
 
-  protected readonly filtradas = computed(() => {
+  protected readonly filtrados = computed(() => {
     const texto = this.filtro().trim().toLowerCase();
     return this.clientes().filter(c => {
       const nombreCompleto = `${c.nombres} ${c.apellidos}`.toLowerCase();
@@ -95,9 +95,9 @@ export class ClienteList implements OnInit {
 
   eliminar(cliente: Cliente): void {
     this.ui.mostrarConfirmacion({
-      titulo: 'Confirmar eliminación',
-      mensaje: '¿Estás seguro de que deseas eliminar al cliente <strong>' + cliente.nombres + ' ' + cliente.apellidos + '</strong>?',
-      confirmarTexto: 'Sí, eliminar',
+      titulo: 'Confirmar eliminaciÃ³n',
+      mensaje: 'Â¿EstÃ¡s seguro de que deseas eliminar al cliente <strong>' + cliente.nombres + ' ' + cliente.apellidos + '</strong>?',
+      confirmarTexto: 'SÃ­, eliminar',
       alConfirmar: () => {
         this.clienteService.eliminar(cliente.id).subscribe({
           next: () => this.cargar(this.pagina(), this.tamanio(), this.ordenarPor(), this.direccion()),
@@ -133,3 +133,4 @@ export class ClienteList implements OnInit {
     }
   }
 }
+

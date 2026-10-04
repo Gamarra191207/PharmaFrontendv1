@@ -1,4 +1,4 @@
-﻿<section class="page">
+<section class="page">
   <h2>{{ esEdicion() ? 'Editar producto' : 'Nuevo producto' }}</h2>
 
   @if (error()) {
@@ -9,15 +9,15 @@
     <p>Cargando datos...</p>
   } @else if (!hayCategoriasActivas()) {
     <div class="aviso">
-      No hay categorÃ­as activas. Registre o active una categorÃ­a antes de crear productos.
-      <a routerLink="/categorias/nuevo" class="btn btn-primary">Nueva categorÃ­a</a>
+      No hay categorías activas. Registre o active una categoría antes de crear productos.
+      <a routerLink="/categorias/nuevo" class="btn btn-primary">Nueva categoría</a>
     </div>
   } @else {
     <form [formGroup]="form" (ngSubmit)="guardar()" class="card formulario">
       <label>
-        CategorÃ­a
+        Categoría
         <select class="input" formControlName="id_categoria">
-          <option [ngValue]="null" disabled>Seleccione una categorÃ­a...</option>
+          <option [ngValue]="null" disabled>Seleccione una categoría...</option>
           @for (c of opciones(); track c.id) {
             <option [ngValue]="c.id">{{ c.nombre }}{{ c.estado ? '' : ' (inactiva)' }}</option>
           }
@@ -25,10 +25,10 @@
       </label>
       
       @if (form.controls.id_categoria.touched && form.controls.id_categoria.invalid) {
-        <small class="error">Seleccione la categorÃ­a del producto.</small>
+        <small class="error">Seleccione la categoría del producto.</small>
       }
       @if (categoriaInactiva()) {
-        <small class="error">La categorÃ­a elegida estÃ¡ inactiva. Elija una categorÃ­a activa.</small>
+        <small class="error">La categoría elegida está inactiva. Elija una categoría activa.</small>
       }
       @if (erroresServidor()['id_categoria']; as mensaje) {
         <small class="error">{{ mensaje }}</small>
@@ -74,4 +74,3 @@
     </form>
   }
 </section>
-

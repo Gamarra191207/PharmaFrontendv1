@@ -1,4 +1,4 @@
-﻿import { Component, computed, inject, OnInit, signal, effect } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, effect } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
@@ -53,6 +53,7 @@ export class ProductoList implements OnInit {
   protected readonly productos = computed(() => {
     const filtro = this.categoriaFiltro();
     const lista = this.productosData();
+    // Añadir el nombre de la categoría a cada producto para mostrarlo en el HTML
     const categorias = this.categorias();
     const mapeados = lista.map(p => {
       const cat = categorias.find(c => c.id === p.id_categoria);
@@ -147,4 +148,3 @@ export class ProductoList implements OnInit {
     });
   }
 }
-

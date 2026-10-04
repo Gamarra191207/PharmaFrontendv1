@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+﻿import { Component, computed, inject, OnInit, signal, effect } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
@@ -27,16 +27,32 @@ export class ProductoList implements OnInit {
   protected readonly ordenarPor = signal<OrdenProducto>('nombre');
   protected readonly direccion = signal<Direccion>('asc');
 
-  protected readonly resultado = signal<PaginaResponse<Producto> | null>(null);
+  protected readonly productosData = signal<Producto[]>([]);
   protected readonly categorias = signal<Categoria[]>([]);
   protected readonly categoriaFiltro = signal<number | null>(null);
   protected readonly cargando = signal(false);
   protected readonly error = signal<string | null>(null);
 
+  // Metadatos de la página
+  protected readonly totalElementos = signal(0);
+  protected readonly totalPaginas = signal(0);
+  protected readonly ultima = signal(true);
+
+  constructor() {
+    effect(() => {
+      const p = this.pagina();
+      const t = this.tamanio();
+      const o = this.ordenarPor();
+      const d = this.direccion();
+      
+      this.cargar(p, t, o, d);
+    });
+  }
+
   /** Filtra por categoría los productos de la página actual. */
   protected readonly productos = computed(() => {
     const filtro = this.categoriaFiltro();
-    const lista = this.resultado()?.contenido ?? [];
+    const lista = this.productosData();
     return filtro === null ? lista : lista.filter(p => p.categoriaId === filtro);
   });
 
@@ -45,17 +61,39 @@ export class ProductoList implements OnInit {
       next: datos => this.categorias.set(datos),
       error: (err: HttpErrorResponse) => mostrarError(this.error, err),
     });
-    this.cargar();
   }
 
-  cargar(): void {
+  cargar(pagina: number, tamanio: number, ordenarPor: OrdenProducto, direccion: Direccion): void {
     this.cargando.set(true);
     this.error.set(null);
     this.productoService
-      .listar(this.pagina(), this.tamanio(), this.ordenarPor(), this.direccion())
+      .listar(pagina, tamanio, ordenarPor, direccion)
       .subscribe({
-        next: pagina => {
-          this.resultado.set(pagina);
+        next: (datos: any) => {
+          if (Array.isArray(datos)) {
+            let arr = [...datos];
+            
+            arr.sort((a: any, b: any) => {
+              const vA = (a[ordenarPor] || '').toString().toLowerCase();
+              const vB = (b[ordenarPor] || '').toString().toLowerCase();
+              if (vA < vB) return direccion === 'asc' ? -1 : 1;
+              if (vA > vB) return direccion === 'asc' ? 1 : -1;
+              return 0;
+            });
+
+            const inicio = pagina * tamanio;
+            const fin = inicio + tamanio;
+
+            this.productosData.set(arr.slice(inicio, fin));
+            this.totalElementos.set(arr.length);
+            this.totalPaginas.set(Math.ceil(arr.length / tamanio) || 1);
+            this.ultima.set(fin >= arr.length);
+          } else {
+            this.productosData.set(datos.contenido || []);
+            this.totalElementos.set(datos.totalElementos || 0);
+            this.totalPaginas.set(datos.totalPaginas || 1);
+            this.ultima.set(datos.ultima ?? true);
+          }
           this.cargando.set(false);
         },
         error: (err: HttpErrorResponse) => {
@@ -66,13 +104,14 @@ export class ProductoList implements OnInit {
   }
 
   irA(pagina: number): void {
-    this.pagina.set(pagina);
-    this.cargar();
+    if (pagina >= 0 && pagina < this.totalPaginas()) {
+      this.pagina.set(pagina);
+    }
   }
 
   cambiarTamanio(valor: string): void {
     this.tamanio.set(Number(valor));
-    this.irA(0);
+    this.pagina.set(0);
   }
 
   ordenar(campo: OrdenProducto): void {
@@ -82,7 +121,7 @@ export class ProductoList implements OnInit {
       this.ordenarPor.set(campo);
       this.direccion.set('asc');
     }
-    this.irA(0);
+    this.pagina.set(0);
   }
 
   filtrarPorCategoria(valor: string): void {
@@ -96,7 +135,7 @@ export class ProductoList implements OnInit {
       confirmarTexto: 'Sí, dar de baja',
       alConfirmar: () => {
         this.productoService.darDeBaja(producto.id).subscribe({
-          next: () => this.cargar(),
+          next: () => this.cargar(this.pagina(), this.tamanio(), this.ordenarPor(), this.direccion()),
           error: (err: HttpErrorResponse) => mostrarError(this.error, err)
         });
       }

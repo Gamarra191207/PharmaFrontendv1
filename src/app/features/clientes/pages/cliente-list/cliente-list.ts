@@ -1,4 +1,4 @@
-﻿import { Component, computed, inject, OnInit, signal, effect } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, effect } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { Cliente } from '../../models/cliente.model';
@@ -22,13 +22,13 @@ export class ClienteList implements OnInit {
   protected readonly error = signal<string | null>(null);
   protected readonly filtro = signal('');
   
-  // Paginacion y Orden
+  // Paginación y Orden
   protected readonly pagina = signal(0);
   protected readonly tamanio = signal(10);
   protected readonly ordenarPor = signal('apellidos');
   protected readonly direccion = signal<'asc' | 'desc'>('asc');
   
-  // Metadatos de la pagina
+  // Metadatos de la página
   protected readonly totalElementos = signal(0);
   protected readonly totalPaginas = signal(0);
   protected readonly ultima = signal(true);
@@ -133,6 +133,3 @@ export class ClienteList implements OnInit {
     }
   }
 }
-
-
-

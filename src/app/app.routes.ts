@@ -1,4 +1,4 @@
-﻿import { Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { MainLayout } from './layout/main-layout/main-layout';
 
 export const routes: Routes = [
@@ -31,9 +31,8 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    title: 'PÃ¡gina no encontrada',
+    title: 'Página no encontrada',
     loadComponent: () =>
       import('./shared/pages/no-encontrado/no-encontrado').then(m => m.NoEncontrado),
   },
 ];
-

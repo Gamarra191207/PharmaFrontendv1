@@ -1,45 +1,8 @@
+import { Mn as from, Qn as Subject, cn as forkJoin, ur as Subscription, vn as map } from "./esm5-DYNb5pjm.js";
 import { n as _defineProperty, t as _objectSpread2 } from "./objectSpread2-weooBxVk.js";
-import { $l as Subscription, $n as Output, Ac as InjectionToken, Bt as computed, Ca as ɵɵclassProp, Dn as Host, El as signal, En as ElementRef, Gl as createOperatorSubscriber, Hl as map, In as Input, Ml as ɵɵdefineInjector, Mr as afterNextRender, O as booleanAttribute, Pn as Inject, Qn as Optional, Qo as ɵɵlistener, Wi as setClassMetadata, Wl as Subject, Zc as Version, aa as ɵɵControlFeature, al as effect, ao as ɵɵdefineNgModule, bi as isSubscribable, ca as ɵɵInheritDefinitionFeature, co as ɵɵdirectiveInject, dr as Service, fl as inject, io as ɵɵdefineDirective, ir as Renderer2, jc as Injector, jo as ɵɵgetInheritedFactory, la as ɵɵNgOnChangesFeature, ol as formatRuntimeError, pr as SkipSelf, qc as RuntimeError, ql as Observable, qn as NgModule, qt as untracked, r as ChangeDetectorRef, sl as forwardRef, so as ɵɵdefineService, tn as ApplicationRef, ua as ɵɵProvidersFeature, ur as Self, wc as EventEmitter, wn as Directive, ya as ɵɵattribute, yc as DestroyRef, yi as isPromise } from "./core-CsmqiORA.js";
-import { c as innerFrom, i as getDOM, l as popResultSelector, o as from } from "./_platform_location-chunk-DNwFFEkx.js";
-import { n as argsArgArrayOrObject, r as mapOneOrManyArgs, t as createObject } from "./createObject-D152ZMZv.js";
-import "./common-DfgDLg7I.js";
-//#region node_modules/rxjs/dist/esm5/internal/observable/forkJoin.js
-function forkJoin() {
-	var args = [];
-	for (var _i = 0; _i < arguments.length; _i++) args[_i] = arguments[_i];
-	var resultSelector = popResultSelector(args);
-	var _a = argsArgArrayOrObject(args), sources = _a.args, keys = _a.keys;
-	var result = new Observable(function(subscriber) {
-		var length = sources.length;
-		if (!length) {
-			subscriber.complete();
-			return;
-		}
-		var values = new Array(length);
-		var remainingCompletions = length;
-		var remainingEmissions = length;
-		var _loop_1 = function(sourceIndex) {
-			var hasValue = false;
-			innerFrom(sources[sourceIndex]).subscribe(createOperatorSubscriber(subscriber, function(value) {
-				if (!hasValue) {
-					hasValue = true;
-					remainingEmissions--;
-				}
-				values[sourceIndex] = value;
-			}, function() {
-				return remainingCompletions--;
-			}, void 0, function() {
-				if (!remainingCompletions || !hasValue) {
-					if (!remainingEmissions) subscriber.next(keys ? createObject(keys, values) : values);
-					subscriber.complete();
-				}
-			}));
-		};
-		for (var sourceIndex = 0; sourceIndex < length; sourceIndex++) _loop_1(sourceIndex);
-	});
-	return resultSelector ? result.pipe(mapOneOrManyArgs(resultSelector)) : result;
-}
-//#endregion
+import { Fn as forwardRef, G as Injector, L as EventEmitter, O as DestroyRef, Pn as formatRuntimeError, Ui as signal, W as InjectionToken, _ as untracked, c as computed, ht as Version, ua as ɵɵdefineInjector, ut as RuntimeError, wr as inject, xn as effect } from "./_resource-chunk-Cz3hiGjF.js";
+import { $n as SkipSelf, Ai as setClassMetadata, Ga as ɵɵdefineNgModule, Gi as ɵɵControlFeature, Ja as ɵɵdirectiveInject, Ji as ɵɵInheritDefinitionFeature, Nn as NgModule, O as booleanAttribute, Rn as Optional, Ro as ɵɵlistener, Sn as Input, Vt as ApplicationRef, Wa as ɵɵdefineDirective, Wn as Renderer2, Xi as ɵɵProvidersFeature, Xn as Self, Yi as ɵɵNgOnChangesFeature, Zn as Service, _o as ɵɵgetInheritedFactory, aa as ɵɵattribute, ai as isPromise, bn as Inject, fn as ElementRef, la as ɵɵclassProp, oi as isSubscribable, pn as Host, qa as ɵɵdefineService, r as ChangeDetectorRef, un as Directive, vr as afterNextRender, zn as Output } from "./core-DQkce0Cj.js";
+import { s as getDOM } from "./_xhr-chunk-OTllfd6O.js";
 //#region node_modules/@angular/forms/fesm2022/forms.mjs
 /**
 * @license Angular v22.2.0
@@ -522,7 +485,8 @@ function composeAsync(validators) {
 	const presentValidators = validators.filter(isPresent);
 	if (presentValidators.length == 0) return null;
 	return function(control) {
-		return forkJoin(executeValidators(control, presentValidators).map(toObservable)).pipe(map(mergeErrors));
+		const observables = executeValidators(control, presentValidators).map(toObservable);
+		return forkJoin(observables).pipe(map(mergeErrors));
 	};
 }
 function composeAsyncValidators(validators) {

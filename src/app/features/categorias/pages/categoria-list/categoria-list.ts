@@ -49,9 +49,9 @@ export class CategoriaList implements OnInit {
 
   eliminar(categoria: Categoria): void {
     this.ui.mostrarConfirmacion({
-      titulo: 'Confirmar eliminación',
-      mensaje: '¿Estás seguro de que deseas eliminar la categoría <strong>' + categoria.nombre + '</strong>?',
-      confirmarTexto: 'Sí, eliminar',
+      titulo: 'Confirmar eliminaciÃ³n',
+      mensaje: 'Â¿EstÃ¡s seguro de que deseas eliminar la categorÃ­a <strong>' + categoria.nombre + '</strong>?',
+      confirmarTexto: 'SÃ­, eliminar',
       alConfirmar: () => {
         this.categoriaService.eliminar(categoria.id).subscribe({
           next: () => this.categorias.update(lista => lista.filter(c => c.id !== categoria.id)),

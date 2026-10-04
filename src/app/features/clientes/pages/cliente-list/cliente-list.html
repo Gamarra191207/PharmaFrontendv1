@@ -1,10 +1,10 @@
-﻿<section class="page">
+<section class="page">
   <header class="page-header">
     <h2>Clientes</h2>
     <a routerLink="nuevo" class="btn btn-primary">+ Nuevo cliente</a>
   </header>
 
-  <input class="input buscador" placeholder="Buscar por DNI, nombres o apellidosâ€¦"
+  <input class="input buscador" placeholder="Buscar por nombre, apellido o DNI…"
          [value]="filtro()" (input)="filtro.set($any($event.target).value)" />
 
   @if (error()) {
@@ -12,32 +12,19 @@
   }
 
   @if (cargando()) {
-    <p>Cargando clientesâ€¦</p>
+    <p>Cargando clientes…</p>
   } @else {
     <table class="tabla">
       <thead>
-        <tr>
-          <th>ID</th>
-          <th style="cursor:pointer" (click)="ordenar('dni')">
-            DNI @if(ordenarPor() === 'dni') { {{ direccion() === 'asc' ? 'â†‘' : 'â†“' }} }
-          </th>
-          <th style="cursor:pointer" (click)="ordenar('apellidos')">
-            Apellidos y Nombres @if(ordenarPor() === 'apellidos') { {{ direccion() === 'asc' ? 'â†‘' : 'â†“' }} }
-          </th>
-          <th>Correo</th>
-          <th>TelÃ©fono</th>
-          <th>Estado</th>
-          <th>Acciones</th>
-        </tr>
+        <tr><th>DNI</th><th>Nombres</th><th>Apellidos</th><th>Email</th><th>Estado</th><th>Acciones</th></tr>
       </thead>
       <tbody>
-        @for (c of filtradas(); track c.id) {
+        @for (c of filtrados(); track c.id) {
           <tr>
-            <td>{{ c.id }}</td>
             <td>{{ c.dni }}</td>
-            <td>{{ c.apellidos }}, {{ c.nombres }}</td>
+            <td>{{ c.nombres }}</td>
+            <td>{{ c.apellidos }}</td>
             <td>{{ c.email }}</td>
-            <td>{{ c.telefono ?? 'â€”' }}</td>
             <td>
               <span class="badge" [class.inactivo]="!c.estado">{{ c.estado ? 'Activo' : 'Inactivo' }}</span>
             </td>
@@ -47,31 +34,9 @@
             </td>
           </tr>
         } @empty {
-          <tr><td colspan="7" class="vacio">No hay clientes registrados.</td></tr>
+          <tr><td colspan="6" class="vacio">No hay clientes registrados.</td></tr>
         }
       </tbody>
     </table>
-
-    <div class="paginacion">
-      <div>
-        <label>
-          TamaÃ±o:
-          <select [value]="tamanio()" (change)="cambiarTamanio(+$any($event.target).value)">
-            <option [value]="5">5</option>
-            <option [value]="10">10</option>
-            <option [value]="20">20</option>
-          </select>
-        </label>
-      </div>
-      <div class="controles-paginas">
-        <button class="btn" (click)="paginaAnterior()" [disabled]="pagina() === 0">Anterior</button>
-        <span>PÃ¡gina {{ pagina() + 1 }} de {{ totalPaginas() }} Â· {{ totalElementos() }} clientes</span>
-        <button class="btn" (click)="paginaSiguiente()" [disabled]="ultima()">Siguiente</button>
-      </div>
-    </div>
   }
-
-
 </section>
-
-

@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal, effect } from '@angular/core';
+﻿import { Component, computed, inject, OnInit, signal, effect } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
@@ -33,7 +33,7 @@ export class ProductoList implements OnInit {
   protected readonly cargando = signal(false);
   protected readonly error = signal<string | null>(null);
 
-  // Metadatos de la página
+  // Metadatos de la pÃ¡gina
   protected readonly totalElementos = signal(0);
   protected readonly totalPaginas = signal(0);
   protected readonly ultima = signal(true);
@@ -49,15 +49,15 @@ export class ProductoList implements OnInit {
     });
   }
 
-  /** Filtra por categoría los productos de la página actual. */
+  /** Filtra por categorÃ­a los productos de la pÃ¡gina actual. */
   protected readonly productos = computed(() => {
     const filtro = this.categoriaFiltro();
     const lista = this.productosData();
-    // Añadir el nombre de la categoría a cada producto para mostrarlo en el HTML
+    // AÃ±adir el nombre de la categorÃ­a a cada producto para mostrarlo en el HTML
     const categorias = this.categorias();
     const mapeados = lista.map(p => {
       const cat = categorias.find(c => c.id === p.id_categoria);
-      return { ...p, categoriaNombre: cat ? cat.nombre : 'Desconocida' };
+      return { ...p, id: p.id || p.Id || (p as any)['id_producto'] || (p as any)['idProducto'] || (p as any)['ID'], categoriaNombre: cat ? cat.nombre : 'Desconocida' };
     });
     return filtro === null ? mapeados : mapeados.filter(p => p.id_categoria === filtro);
   });
@@ -136,9 +136,9 @@ export class ProductoList implements OnInit {
 
   darDeBaja(producto: Producto): void {
     this.ui.mostrarConfirmacion({
-      titulo: 'Confirmar eliminación',
-      mensaje: '¿Estás seguro de que deseas dar de baja el producto <strong>' + producto.nombre + '</strong>?',
-      confirmarTexto: 'Sí, dar de baja',
+      titulo: 'Confirmar eliminaciÃ³n',
+      mensaje: 'Â¿EstÃ¡s seguro de que deseas dar de baja el producto <strong>' + producto.nombre + '</strong>?',
+      confirmarTexto: 'SÃ­, dar de baja',
       alConfirmar: () => {
         this.productoService.darDeBaja(producto.id).subscribe({
           next: () => this.cargar(this.pagina(), this.tamanio(), this.ordenarPor(), this.direccion()),
@@ -148,3 +148,5 @@ export class ProductoList implements OnInit {
     });
   }
 }
+
+

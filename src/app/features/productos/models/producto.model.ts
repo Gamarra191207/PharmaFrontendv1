@@ -1,5 +1,6 @@
 ﻿export interface Producto {
   id: number;
+  Id?: number;
   nombre: string;
   precio: number;
   stock: number;
@@ -20,3 +21,4 @@ export interface ProductoRequest {
 /** Campos que el backend acepta en ordenarPor. */
 export type OrdenProducto = 'id' | 'nombre' | 'precio' | 'stock';
 export type Direccion = 'asc' | 'desc';
+

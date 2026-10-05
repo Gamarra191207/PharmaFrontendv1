@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
+﻿import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -51,10 +51,12 @@ export class ProductoForm implements OnInit {
   );
 
   /** Valor del select convertido en signal para validar la dependencia. */
-  private readonly categoriaElegida = toSignal(this.form.controls.id_categoria.valueChanges, { initialValue: null });
+  private readonly formChanges = toSignal(this.form.valueChanges);
 
   protected readonly categoriaInactiva = computed(() => {
-    const elegida = this.categorias().find(c => c.id === this.categoriaElegida());
+    this.formChanges();
+    const id = this.form.controls.id_categoria.value;
+    const elegida = this.categorias().find(c => c.id === id);
     return !!elegida && !elegida.estado;
   });
 
@@ -130,3 +132,5 @@ export class ProductoForm implements OnInit {
     this.cargando.set(false);
   }
 }
+
+

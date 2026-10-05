@@ -1,0 +1,16 @@
+﻿{
+    "variable":  [
+                     {
+                         "key":  "baseUrl",
+                         "type":  "string",
+                         "value":  "http://localhost:8080/api"
+                     }
+                 ],
+    "info":  {
+                 "name":  "PharmaSoft - S8 Dependencias",
+                 "schema":  "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+             },
+    "item":  [
+
+             ]
+}

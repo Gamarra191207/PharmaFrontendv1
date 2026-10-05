@@ -1,4 +1,4 @@
-﻿import { Component, computed, inject, OnInit, signal, effect } from '@angular/core';
+﻿import { Component, computed, inject, input, OnInit, signal, effect } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
@@ -21,6 +21,8 @@ export class ProductoList implements OnInit {
   private readonly categoriaService = inject(CategoriaService);
   private readonly ui = inject(UiService);
 
+  readonly categoriaId = input<string>();
+
   // Estado de la consulta paginada
   protected readonly pagina = signal(0);
   protected readonly tamanio = signal(10);
@@ -30,6 +32,12 @@ export class ProductoList implements OnInit {
   protected readonly productosData = signal<Producto[]>([]);
   protected readonly categorias = signal<Categoria[]>([]);
   protected readonly categoriaFiltro = signal<number | null>(null);
+  protected readonly categoriaBuscadaNombre = computed(() => {
+    const id = this.categoriaFiltro();
+    if (!id) return '';
+    const cat = this.categorias().find(c => c.id === id);
+    return cat ? cat.nombre : '';
+  });
   protected readonly cargando = signal(false);
   protected readonly error = signal<string | null>(null);
 
@@ -63,6 +71,11 @@ export class ProductoList implements OnInit {
   });
 
   ngOnInit(): void {
+    const catIdStr = this.categoriaId();
+    if (catIdStr) {
+      this.categoriaFiltro.set(Number(catIdStr));
+      this.tamanio.set(100);
+    }
     this.categoriaService.listar().subscribe({
       next: datos => this.categorias.set(datos),
       error: (err: HttpErrorResponse) => mostrarError(this.error, err),
@@ -148,5 +161,7 @@ export class ProductoList implements OnInit {
     });
   }
 }
+
+
 
 

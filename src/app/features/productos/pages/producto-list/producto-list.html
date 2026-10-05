@@ -1,4 +1,4 @@
-<section class="page">
+﻿<section class="page">
   <header class="page-header">
     <h2>Productos</h2>
     <a routerLink="nuevo" class="btn btn-primary">+ Nuevo producto</a>
@@ -6,16 +6,16 @@
 
   <div class="filtros">
     <label>
-      Categoría
+      CategorÃ­a
       <select class="input" (change)="filtrarPorCategoria($any($event.target).value)">
-        <option value="">Todas</option>
+        <option value="" [selected]="!categoriaFiltro()">Todas</option>
         @for (c of categorias(); track c.id) {
-          <option [value]="c.id">{{ c.nombre }}</option>
+          <option [value]="c.id" [selected]="c.id === categoriaFiltro()">{{ c.nombre }}</option>
         }
       </select>
     </label>
     <label>
-      Por página
+      Por pÃ¡gina
       <select class="input" [value]="tamanio()" (change)="cambiarTamanio($any($event.target).value)">
         <option value="5">5</option>
         <option value="10">10</option>
@@ -31,11 +31,14 @@
   @if (cargando()) {
     <p>Cargando productos...</p>
   } @else {
+    @if (categoriaFiltro()) {
+      <div class="aviso">Mostrando productos de la categoría {{ categoriaBuscadaNombre() }} en los primeros 100 registros.</div>
+    }
     <table class="tabla">
       <thead>
         <tr>
           <th><button type="button" class="orden" (click)="ordenar('nombre')">Nombre</button></th>
-          <th>Categoría</th>
+          <th>CategorÃ­a</th>
           <th><button type="button" class="orden" (click)="ordenar('precio')">Precio</button></th>
           <th><button type="button" class="orden" (click)="ordenar('stock')">Stock</button></th>
           <th>Estado</th>
@@ -66,9 +69,12 @@
     </table>
 
     <footer class="paginador">
-      <span>Página {{ pagina() + 1 }} de {{ totalPaginas() || 1 }} · {{ totalElementos() }} productos</span>
+      <span>PÃ¡gina {{ pagina() + 1 }} de {{ totalPaginas() || 1 }} Â· {{ totalElementos() }} productos</span>
       <button type="button" class="btn" [disabled]="pagina() === 0" (click)="irA(pagina() - 1)">Anterior</button>
       <button type="button" class="btn" [disabled]="ultima()" (click)="irA(pagina() + 1)">Siguiente</button>
     </footer>
   }
 </section>
+
+
+

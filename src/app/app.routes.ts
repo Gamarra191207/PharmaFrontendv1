@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+﻿import { Routes } from '@angular/router';
 import { MainLayout } from './layout/main-layout/main-layout';
 
 export const routes: Routes = [
@@ -27,12 +27,19 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/clientes/clientes.routes').then(m => m.CLIENTES_ROUTES),
       },
+      {
+        path: 'ventas',
+        loadChildren: () =>
+          import('./features/ventas/ventas.routes').then(m => m.VENTAS_ROUTES),
+      },
     ],
   },
   {
     path: '**',
-    title: 'Página no encontrada',
+    title: 'PÃ¡gina no encontrada',
     loadComponent: () =>
       import('./shared/pages/no-encontrado/no-encontrado').then(m => m.NoEncontrado),
   },
 ];
+
+

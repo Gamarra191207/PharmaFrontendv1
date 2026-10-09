@@ -5,23 +5,21 @@
   </header>
 
   <div class="filtros">
-    <label>
-      Categoría
-      <select class="input" (change)="filtrarPorCategoria($any($event.target).value)">
-        <option value="">Todas</option>
-        @for (c of categorias(); track c.id) {
-          <option [value]="c.id">{{ c.nombre }}</option>
-        }
-      </select>
-    </label>
-    <label>
-      Por página
-      <select class="input" [value]="tamanio()" (change)="cambiarTamanio($any($event.target).value)">
-        <option value="5">5</option>
-        <option value="10">10</option>
-        <option value="20">20</option>
-      </select>
-    </label>
+    <input class="input" type="search" placeholder="Buscar por nombre…" [formControl]="buscarControl" />
+
+    <select class="input" (change)="filtrarPorCategoria($any($event.target).value)">
+      <option value="" [selected]="!categoriaFiltro()">Todas</option>
+      @for (c of categorias(); track c.id) {
+        <option [value]="c.id" [selected]="c.id === categoriaFiltro()">{{ c.nombre }}</option>
+      }
+    </select>
+
+    <select class="input" (change)="cambiarTamanio($any($event.target).value)" [value]="tamanio()">
+      <option value="10">10 por página</option>
+      <option value="20">20 por página</option>
+      <option value="50">50 por página</option>
+      <option value="100">100 por página</option>
+    </select>
   </div>
 
   @if (error()) {
@@ -29,46 +27,49 @@
   }
 
   @if (cargando()) {
-    <p>Cargando productos...</p>
+    <p>Cargando productos…</p>
   } @else {
+    @if (categoriaFiltro()) {
+      <div class="aviso">Mostrando productos de la categoría {{ categoriaBuscadaNombre() }} en los primeros 100 registros.</div>
+    }
     <table class="tabla">
       <thead>
         <tr>
-          <th><button type="button" class="orden" (click)="ordenar('nombre')">Nombre</button></th>
+          <th>ID</th>
+          <th class="ordenable" (click)="ordenar('nombre')">Nombre {{ indicadorOrden('nombre') }}</th>
           <th>Categoría</th>
-          <th><button type="button" class="orden" (click)="ordenar('precio')">Precio</button></th>
-          <th><button type="button" class="orden" (click)="ordenar('stock')">Stock</button></th>
+          <th class="ordenable monto" (click)="ordenar('precio')">Precio {{ indicadorOrden('precio') }}</th>
+          <th class="ordenable monto" (click)="ordenar('stock')">Stock {{ indicadorOrden('stock') }}</th>
           <th>Estado</th>
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
-        @for (p of productos(); track p.id) {
+        @for (p of productosPaginados(); track p.id) {
           <tr>
+            <td>{{ p.id }}</td>
             <td>{{ p.nombre }}</td>
-            <td><span class="chip">{{ p.categoriaNombre }}</span></td>
-            <td>{{ p.precio | currency: 'PEN' : 'S/ ' }}</td>
-            <td>{{ p.stock }}</td>
+            <td>{{ p.categoriaNombre }}</td>
+            <td class="monto">{{ p.precio | currency: 'PEN' : 'S/ ' }}</td>
+            <td class="monto" [class.sin-stock]="p.stock === 0">{{ p.stock }}</td>
             <td>
               <span class="badge" [class.inactivo]="!p.estado">{{ p.estado ? 'Activo' : 'Inactivo' }}</span>
             </td>
             <td class="acciones">
               <a [routerLink]="[p.id, 'editar']" class="btn">Editar</a>
-              <button type="button" class="btn btn-peligro" [disabled]="!p.estado" (click)="darDeBaja(p)">
-                Dar de baja
-              </button>
+              <button type="button" class="btn btn-peligro" (click)="eliminar(p)">Eliminar</button>
             </td>
           </tr>
         } @empty {
-          <tr><td colspan="6" class="vacio">No hay productos para mostrar.</td></tr>
+          <tr><td colspan="7" class="vacio">No hay productos registrados.</td></tr>
         }
       </tbody>
     </table>
 
     <footer class="paginador">
-      <span>Página {{ pagina() + 1 }} de {{ totalPaginas() || 1 }} · {{ totalElementos() }} productos</span>
+      <span>Página {{ pagina() + 1 }} de {{ totalPaginas() || 1 }} · {{ filtrados().length }} productos</span>
       <button type="button" class="btn" [disabled]="pagina() === 0" (click)="irA(pagina() - 1)">Anterior</button>
-      <button type="button" class="btn" [disabled]="ultima()" (click)="irA(pagina() + 1)">Siguiente</button>
+      <button type="button" class="btn" [disabled]="pagina() >= totalPaginas() - 1" (click)="irA(pagina() + 1)">Siguiente</button>
     </footer>
   }
 </section>

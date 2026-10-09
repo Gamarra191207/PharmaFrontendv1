@@ -2,13 +2,13 @@
 
 ## B1. Resumen de la ejecución
 - **Casos ejecutados:** 18
-- **Casos que pasan:** 8
-- **Casos que fallan:** 10
+- **Casos que pasan:** 10
+- **Casos que fallan:** 8
 
 **Por grupo:**
-- **Altas:** 7 ejecutados (3 Pasan, 4 Fallan)
+- **Altas:** 7 ejecutados (4 Pasan, 3 Fallan)
 - **Cambios:** 5 ejecutados (1 Pasa, 4 Fallan)
-- **Bajas:** 6 ejecutados (4 Pasan, 2 Fallan)
+- **Bajas:** 6 ejecutados (5 Pasan, 1 Falla)
 
 ---
 
@@ -89,3 +89,4 @@ Revela que la SPA valida la información con los datos "del pasado" (los que ten
 
 **5. Si mañana el backend corrige el hallazgo de A-04, ¿qué tendría que cambiar en la SPA? ¿Y qué seguiría igual?**
 En la SPA no tendría que cambiar el diseño visual: seguiría ocultando la categoría en el selector (ya lo hace bien). Lo único que se añadiría es que, si llegase a ocurrir el escenario de C-04, el interceptor de la SPA atraparía elegantemente el error 409 del backend y usaría nuestro UiService para mostrar el mensaje "La categoría está inactiva" de forma amigable.
+

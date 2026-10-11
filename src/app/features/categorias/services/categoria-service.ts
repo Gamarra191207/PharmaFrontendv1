@@ -1,4 +1,4 @@
-import { inject, Service } from '@angular/core';
+﻿import { inject, Service } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
@@ -10,7 +10,7 @@ export class CategoriaService {
   private readonly url = `${environment.apiUrl}/categorias`;
 
   listar(): Observable<Categoria[]> {
-    return this.http.get<Categoria[]>(this.url);
+    return this.http.get<Categoria[]>(this.url, { headers: { 'Cache-Control': 'no-cache', Pragma: 'no-cache' } });
   }
 
   obtener(id: number): Observable<Categoria> {
@@ -29,3 +29,4 @@ export class CategoriaService {
     return this.http.delete<void>(`${this.url}/${id}`);
   }
 }
+

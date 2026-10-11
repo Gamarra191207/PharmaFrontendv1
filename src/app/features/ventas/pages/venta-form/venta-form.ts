@@ -1,4 +1,4 @@
-﻿import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CurrencyPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -164,7 +164,8 @@ export class VentaForm implements OnInit {
     }).subscribe({
       next: ({ clientes, productos }) => {
         this.clientes.set(clientes.contenido.filter(c => c.estado));
-        this.productos.set(productos.contenido.filter(p => p.estado && p.stock > 0));
+        const listaProds: Producto[] = Array.isArray(productos) ? (productos as any) : (productos.contenido || []);
+        this.productos.set(listaProds.filter(p => p.estado && p.stock > 0));
         this.cargando.set(false);
       },
       error: (err: HttpErrorResponse) => {

@@ -62,7 +62,10 @@ export class VentaList implements OnInit {
 
   ngOnInit(): void {
     this.clienteService.listar(0, 100).subscribe({
-      next: p => this.clientes.set(p.contenido),
+      next: (p: any) => {
+        const lista = Array.isArray(p) ? p : (p?.contenido || []);
+        this.clientes.set(lista);
+      },
       error: (err: HttpErrorResponse) => this.error.set(mensajeError(err)),
     });
     this.cargar();
@@ -94,8 +97,22 @@ export class VentaList implements OnInit {
     this.error.set(null);
 
     this.ventaService.buscar(filtro, this.pagina(), 10).subscribe({
-      next: r => {
-        this.resultado.set(r);
+      next: (r: any) => {
+        if (Array.isArray(r)) {
+          const tamanio = 10;
+          const inicio = this.pagina() * tamanio;
+          const fin = inicio + tamanio;
+          this.resultado.set({
+            contenido: r.slice(inicio, fin),
+            pagina: this.pagina(),
+            tamanio: tamanio,
+            totalElementos: r.length,
+            totalPaginas: Math.ceil(r.length / tamanio) || 1,
+            ultima: fin >= r.length,
+          });
+        } else {
+          this.resultado.set(r);
+        }
         this.cargando.set(false);
       },
       error: (err: HttpErrorResponse) => {

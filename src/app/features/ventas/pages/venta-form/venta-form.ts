@@ -8,6 +8,7 @@ import { forkJoin } from 'rxjs';
 import { mensajeError } from '../../../../core/utils/http-error';
 import { redondear } from '../../../../core/utils/numeros';
 import { coincide } from '../../../../core/utils/texto';
+import { CategoriaService } from '../../../categorias/services/categoria-service';
 import { Cliente } from '../../../clientes/models/cliente.model';
 import { ClienteService } from '../../../clientes/services/cliente-service';
 import { Producto } from '../../../productos/models/producto.model';
@@ -34,6 +35,7 @@ export class VentaForm implements OnInit {
   private readonly ventaService = inject(VentaService);
   private readonly clienteService = inject(ClienteService);
   private readonly productoService = inject(ProductoService);
+  private readonly categoriaService = inject(CategoriaService);
   private readonly router = inject(Router);
 
   protected readonly clientes = signal<Cliente[]>([]);
@@ -161,11 +163,29 @@ export class VentaForm implements OnInit {
     forkJoin({
       clientes: this.clienteService.listar(0, 100),
       productos: this.productoService.listar(0, 100, 'nombre', 'asc'),
+      categorias: this.categoriaService.listar(),
     }).subscribe({
-      next: ({ clientes, productos }) => {
-        this.clientes.set(clientes.contenido.filter(c => c.estado));
-        const listaProds: Producto[] = Array.isArray(productos) ? (productos as any) : (productos.contenido || []);
-        this.productos.set(listaProds.filter(p => p.estado && p.stock > 0));
+      next: ({ clientes, productos, categorias }) => {
+        const listaClientes: Cliente[] = Array.isArray(clientes)
+          ? (clientes as any)
+          : (clientes?.contenido || []);
+        this.clientes.set(listaClientes.filter(c => c.estado));
+
+        const rawProds: any[] = Array.isArray(productos)
+          ? (productos as any)
+          : (productos?.contenido || []);
+        const cats = Array.isArray(categorias) ? categorias : [];
+
+        const prodsMapeados: Producto[] = rawProds.map(p => {
+          const cat = cats.find(c => c.id === (p.id_categoria || p.categoriaId));
+          return {
+            ...p,
+            id: p.id || p.Id,
+            categoriaNombre: cat ? cat.nombre : (p.categoriaNombre || 'Sin categoría'),
+          };
+        });
+
+        this.productos.set(prodsMapeados.filter(p => p.estado && p.stock > 0));
         this.cargando.set(false);
       },
       error: (err: HttpErrorResponse) => {
@@ -206,4 +226,3 @@ export class VentaForm implements OnInit {
     });
   }
 }
-

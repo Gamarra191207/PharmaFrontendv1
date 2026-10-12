@@ -1,0 +1,116 @@
+{
+  "info": {
+    "name": "PharmaSoft - S9 Ventas",
+    "description": "Colección de pruebas para el módulo de Ventas y Reportes (Sesión 9)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Registrar venta (Correcta)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"clienteId\": 1,\n  \"detalles\": [\n    { \"productoId\": 1, \"cantidad\": 2 },\n    { \"productoId\": 2, \"cantidad\": 1 }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/ventas",
+          "host": ["{{baseUrl}}"],
+          "path": ["ventas"]
+        }
+      }
+    },
+    {
+      "name": "2. Consultar venta por ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ventas/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["ventas", "1"]
+        }
+      }
+    },
+    {
+      "name": "3. Buscar ventas con filtros",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ventas/buscar?clienteId=1&estado=REGISTRADA",
+          "host": ["{{baseUrl}}"],
+          "path": ["ventas", "buscar"],
+          "query": [
+            { "key": "clienteId", "value": "1" },
+            { "key": "estado", "value": "REGISTRADA" },
+            { "key": "desde", "value": "" },
+            { "key": "hasta", "value": "" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "4. V-05: Venta con el mismo producto en dos líneas",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"clienteId\": 1,\n  \"detalles\": [\n    { \"productoId\": 1, \"cantidad\": 1 },\n    { \"productoId\": 1, \"cantidad\": 2 }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/ventas",
+          "host": ["{{baseUrl}}"],
+          "path": ["ventas"]
+        }
+      }
+    },
+    {
+      "name": "5. M-02: Venta para cliente inactivo (Esperado 409)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"clienteId\": 4,\n  \"detalles\": [\n    { \"productoId\": 1, \"cantidad\": 1 }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/ventas",
+          "host": ["{{baseUrl}}"],
+          "path": ["ventas"]
+        }
+      }
+    },
+    {
+      "name": "6. Reporte ventas por categoría",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/reportes/ventas-por-categoria",
+          "host": ["{{baseUrl}}"],
+          "path": ["reportes", "ventas-por-categoria"],
+          "query": [
+            { "key": "desde", "value": "" },
+            { "key": "hasta", "value": "" }
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api",
+      "type": "string"
+    }
+  ]
+}

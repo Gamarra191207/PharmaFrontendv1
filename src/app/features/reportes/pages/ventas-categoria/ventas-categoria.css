@@ -1,0 +1,78 @@
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+  margin-bottom: 20px;
+}
+
+.filtros label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.filtros .input {
+  min-width: 160px;
+}
+
+.botones {
+  display: flex;
+  gap: 8px;
+}
+
+.tabla-contenedor {
+  padding: 0;
+  overflow: hidden;
+}
+
+.monto {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.comparativa {
+  width: 250px;
+  min-width: 180px;
+}
+
+.barra-contenedor {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.barra {
+  height: 14px;
+  background-color: #1f5aa6;
+  border-radius: 4px;
+  min-width: 2px;
+  transition: width 0.3s ease;
+}
+
+.porcentaje {
+  font-size: 12px;
+  font-weight: 600;
+  color: #4b5563;
+  min-width: 38px;
+  text-align: right;
+}
+
+.vacio {
+  text-align: center;
+  color: #6b7280;
+  padding: 32px;
+}
+
+.fila-totales {
+  background-color: #f8fafc;
+  border-top: 2px solid #0f2e5c;
+  font-weight: 700;
+}
+
+.fila-totales td {
+  color: #0f2e5c;
+}

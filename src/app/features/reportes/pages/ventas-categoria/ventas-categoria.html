@@ -1,0 +1,70 @@
+<section class="page">
+  <header class="page-header">
+    <h2>Reporte de ventas por categoría</h2>
+  </header>
+
+  <form [formGroup]="filtros" (ngSubmit)="generar()" class="card filtros no-imprimir">
+    <label>
+      Desde
+      <input class="input" type="date" formControlName="desde" />
+    </label>
+    <label>
+      Hasta
+      <input class="input" type="date" formControlName="hasta" />
+    </label>
+    <div class="botones">
+      <button type="button" class="btn" (click)="limpiar()">Limpiar</button>
+      <button type="submit" class="btn btn-primary">Generar</button>
+    </div>
+  </form>
+
+  @if (error()) {
+    <div class="alerta">{{ error() }}</div>
+  }
+
+  @if (cargando()) {
+    <p>Generando reporte…</p>
+  } @else {
+    <div class="card tabla-contenedor">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Categoría</th>
+            <th class="monto">Unidades vendidas</th>
+            <th class="monto">Monto total</th>
+            <th class="comparativa">Comparativa</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of datos(); track item.categoriaId) {
+            <tr>
+              <td><strong>{{ item.categoriaNombre }}</strong></td>
+              <td class="monto">{{ item.cantidadVendida }}</td>
+              <td class="monto">{{ item.montoTotal | currency: 'PEN' : 'S/ ' }}</td>
+              <td class="comparativa">
+                <div class="barra-contenedor">
+                  <div class="barra" [style.width.%]="porcentajeBarra(item.montoTotal)"></div>
+                  <span class="porcentaje">{{ porcentajeBarra(item.montoTotal) }}%</span>
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="4" class="vacio">No hay ventas en el periodo seleccionado.</td>
+            </tr>
+          }
+        </tbody>
+        @if (datos().length > 0) {
+          <tfoot>
+            <tr class="fila-totales">
+              <td><strong>Total general</strong></td>
+              <td class="monto"><strong>{{ totalUnidades() }}</strong></td>
+              <td class="monto"><strong>{{ totalMonto() | currency: 'PEN' : 'S/ ' }}</strong></td>
+              <td></td>
+            </tr>
+          </tfoot>
+        }
+      </table>
+    </div>
+  }
+</section>

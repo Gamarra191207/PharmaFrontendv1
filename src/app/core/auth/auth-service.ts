@@ -16,6 +16,7 @@ const CLAVE_SESION = 'pharmasoft.sesion';
  * - Se guarda en sessionStorage para sobrevivir a una recarga (F5), pero
  *   se borra al cerrar el navegador: la botica usa computadoras compartidas.
  * - Un temporizador cierra la sesión cuando el token vence.
+ * - Un contador por segundo alerta cuando faltan 120 segundos o menos.
  */
 @Service()
 export class AuthService {
@@ -25,13 +26,23 @@ export class AuthService {
 
   private readonly sesionActual = signal<Sesion | null>(this.leerSesionGuardada());
   private temporizador?: ReturnType<typeof setTimeout>;
+  private intervaloContador?: ReturnType<typeof setInterval>;
 
   readonly sesion = this.sesionActual.asReadonly();
   readonly autenticado = computed(() => this.sesionActual() !== null);
 
+  readonly segundosRestantes = signal<number>(0);
+  readonly avisoOculto = signal<boolean>(false);
+  readonly porVencer = computed(() =>
+    this.autenticado() && this.segundosRestantes() > 0 && this.segundosRestantes() <= 120
+  );
+
   constructor() {
     const sesion = this.sesionActual();
-    if (sesion) this.programarExpiracion(sesion);
+    if (sesion) {
+      this.programarExpiracion(sesion);
+      this.iniciarContador(sesion);
+    }
   }
 
   /** Envía las credenciales; si son correctas, guarda la sesión. */
@@ -56,13 +67,21 @@ export class AuthService {
    */
   cerrarSesion(motivo?: 'expirada', volverA?: string): void {
     clearTimeout(this.temporizador);
+    clearInterval(this.intervaloContador);
     sessionStorage.removeItem(CLAVE_SESION);
     this.sesionActual.set(null);
+    this.segundosRestantes.set(0);
+    this.avisoOculto.set(false);
 
     const queryParams: Record<string, string> = {};
     if (motivo) queryParams['expirada'] = '1';
     if (volverA && volverA !== '/login') queryParams['returnUrl'] = volverA;
     this.router.navigate(['/login'], { queryParams });
+  }
+
+  /** Oculta el aviso de expiración hasta la siguiente sesión. */
+  ocultarAviso(): void {
+    this.avisoOculto.set(true);
   }
 
   /** Token vigente o null si no hay sesión o ya venció. */
@@ -79,7 +98,19 @@ export class AuthService {
   private iniciar(sesion: Sesion): void {
     sessionStorage.setItem(CLAVE_SESION, JSON.stringify(sesion));
     this.sesionActual.set(sesion);
+    this.avisoOculto.set(false);
     this.programarExpiracion(sesion);
+    this.iniciarContador(sesion);
+  }
+
+  private iniciarContador(sesion: Sesion): void {
+    clearInterval(this.intervaloContador);
+    const actualizar = () => {
+      const seg = Math.max(0, Math.floor((sesion.expiraEn - Date.now()) / 1000));
+      this.segundosRestantes.set(seg);
+    };
+    actualizar();
+    this.intervaloContador = setInterval(actualizar, 1000);
   }
 
   private programarExpiracion(sesion: Sesion): void {

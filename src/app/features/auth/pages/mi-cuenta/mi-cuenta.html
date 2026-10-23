@@ -1,0 +1,76 @@
+<section class="page mi-cuenta-contenedor">
+  <header class="page-header">
+    <div>
+      <h2>Mi cuenta</h2>
+      <p class="subtitulo">Información del usuario autenticado y permisos concedidos por el servidor.</p>
+    </div>
+    <button type="button" class="btn" (click)="cargar()" [disabled]="cargando()">Actualizar</button>
+  </header>
+
+  @if (permisosCambiaron()) {
+    <div class="alerta-cambio" role="alert">
+      <span class="icono-alerta">⚠</span>
+      <div class="alerta-texto">
+        <strong>Sus permisos cambiaron.</strong>
+        <p>Los permisos asignados en el servidor difieren de los guardados en su sesión actual. Cierre sesión y vuelva a ingresar para actualizarlos.</p>
+      </div>
+      <button type="button" class="btn btn-peligro" (click)="auth.cerrarSesion()">Cerrar sesión ahora</button>
+    </div>
+  }
+
+  @if (cargando()) {
+    <div class="cargando">Cargando datos del perfil desde el servidor…</div>
+  } @else if (error()) {
+    <div class="alerta">{{ error() }}</div>
+  } @else if (perfil(); as p) {
+    <div class="perfil-grid">
+      <!-- Tarjeta de Datos del Usuario -->
+      <article class="card tarjeta-usuario">
+        <div class="avatar">{{ p.nombreCompleto.charAt(0) }}</div>
+        <h3>{{ p.nombreCompleto }}</h3>
+        <p class="username">@{{ p.username }}</p>
+
+        <div class="roles-contenedor">
+          <span class="label-roles">Roles asignados:</span>
+          <div class="chips-roles">
+            @for (rol of p.roles; track rol) {
+              <span class="badge badge-rol">{{ rol }}</span>
+            }
+          </div>
+        </div>
+
+        <div class="sesion-info">
+          <p><strong>Estado de sesión:</strong> <span class="badge badge-activo">Activa</span></p>
+          @if (auth.sesion(); as s) {
+            <p><strong>Vigencia hasta:</strong> {{ s.expiraEn | date: 'dd/MM/yyyy HH:mm:ss' }}</p>
+          }
+        </div>
+      </article>
+
+      <!-- Tabla de Permisos por Módulo -->
+      <article class="card tarjeta-permisos">
+        <h3>Permisos asignados por módulo</h3>
+        <p class="ayuda-permisos">Las funciones del sistema se adaptan según los permisos otorgados por el backend (✔ activo, ✘ inactivo).</p>
+
+        <div class="modulos-lista">
+          @for (mod of modulos; track mod.nombre) {
+            <div class="modulo-item">
+              <h4 class="modulo-titulo">
+                <span class="icono-mod">{{ mod.icono }}</span> {{ mod.nombre }}
+              </h4>
+              <ul class="permisos-lista">
+                @for (perm of mod.permisos; track perm.codigo) {
+                  <li class="permiso-item" [class.concedido]="tienePermiso(perm.codigo)" [class.denegado]="!tienePermiso(perm.codigo)">
+                    <span class="marca">{{ tienePermiso(perm.codigo) ? '✔' : '✘' }}</span>
+                    <span class="permiso-desc">{{ perm.etiqueta }}</span>
+                    <code class="codigo-permiso">{{ perm.codigo }}</code>
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+        </div>
+      </article>
+    </div>
+  }
+</section>

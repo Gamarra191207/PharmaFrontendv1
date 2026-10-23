@@ -36,3 +36,11 @@ export interface Sesion {
   roles: string[];
   permisos: Permiso[];
 }
+
+/** Perfil del usuario autenticado devuelto por GET /auth/me. */
+export interface UsuarioPerfil {
+  username: string;
+  nombreCompleto: string;
+  roles: string[];
+  permisos: Permiso[];
+}

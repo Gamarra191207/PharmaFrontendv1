@@ -1,0 +1,10 @@
+@if (auth.porVencer() && !auth.avisoOculto()) {
+  <aside class="aviso-banner" role="status" aria-live="polite">
+    <div class="aviso-contenido">
+      <span class="icono" aria-hidden="true">⚠</span>
+      <span class="texto">Su sesión vence en <strong>{{ tiempoFormateado() }}</strong>.</span>
+      <button type="button" class="btn-cerrar-ahora" (click)="auth.cerrarSesion()">Cerrar sesión ahora</button>
+      <button type="button" class="btn-ocultar" aria-label="Ocultar aviso de expiración" (click)="auth.ocultarAviso()">×</button>
+    </div>
+  </aside>
+}

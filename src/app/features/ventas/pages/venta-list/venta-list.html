@@ -1,15 +1,15 @@
-﻿<section class="page">
+<section class="page">
   <header class="page-header">
     <h2>Consulta de ventas</h2>
     <div class="botones no-imprimir">
-      <button type="button" class="btn" [disabled]="!resultado()?.contenido?.length" (click)="imprimirConsulta()">🖨 Imprimir consulta</button>
-      <a routerLink="nueva" class="btn btn-primary">+ Nueva venta</a>
+      <button type="button" class="btn" [disabled]="!resultado()?.contenido?.length" (click)="imprimirConsulta()">🖨️ Imprimir consulta</button>
+      <a *appSiPermiso="'VENTAS_REGISTRAR'" routerLink="nueva" class="btn btn-primary">+ Nueva venta</a>
     </div>
   </header>
 
   <!-- Solo en el papel: qué filtros produjeron este listado -->
   <p class="solo-impresion resumen-filtros">
-    Filtros: {{ resumenFiltros() }} · Impreso el {{ ahora() | date: 'dd/MM/yyyy HH:mm' }}
+    Filtros: {{ resumenFiltros() }} — Impreso el {{ ahora() | date: 'dd/MM/yyyy HH:mm' }}
   </p>
 
   <form [formGroup]="filtros" (ngSubmit)="buscar()" class="card filtros no-imprimir">
@@ -60,7 +60,7 @@
             <td><span class="badge" [class.inactivo]="v.estado === 'ANULADA'">{{ v.estado }}</span></td>
             <td class="no-imprimir acciones-fila">
               <a [routerLink]="[v.id]" class="btn">Ver</a>
-              <a [routerLink]="[v.id]" [queryParams]="{ imprimir: 1 }" class="btn" title="Imprimir comprobante" aria-label="Imprimir comprobante">🖨</a>
+              <a [routerLink]="[v.id]" [queryParams]="{ imprimir: 1 }" class="btn" title="Imprimir comprobante" aria-label="Imprimir comprobante">🖨️</a>
             </td>
           </tr>
         } @empty {
@@ -70,8 +70,8 @@
     </table>
 
     <footer class="paginador">
-      <span class="solo-impresion">Total registrado en la página (sin anuladas): {{ totalPagina() | currency: 'PEN' : 'S/ ' }} · </span>
-      <span>Página {{ r.pagina + 1 }} de {{ r.totalPaginas || 1 }} · {{ r.totalElementos }} ventas</span>
+      <span class="solo-impresion">Total registrado en la página (sin anuladas): {{ totalPagina() | currency: 'PEN' : 'S/ ' }} — </span>
+      <span>Página {{ r.pagina + 1 }} de {{ r.totalPaginas || 1 }} — {{ r.totalElementos }} ventas</span>
       <button type="button" class="btn no-imprimir" [disabled]="r.pagina === 0" (click)="irA(r.pagina - 1)">Anterior</button>
       <button type="button" class="btn no-imprimir" [disabled]="r.ultima" (click)="irA(r.pagina + 1)">Siguiente</button>
     </footer>
